@@ -4,7 +4,7 @@
 #
 Name     : libndp
 Version  : 1.6
-Release  : 4
+Release  : 5
 URL      : http://libndp.org/files/libndp-1.6.tar.gz
 Source0  : http://libndp.org/files/libndp-1.6.tar.gz
 Summary  : Neighbour discovery library.
