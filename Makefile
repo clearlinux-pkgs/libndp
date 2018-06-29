@@ -1,5 +1,5 @@
 PKG_NAME := libndp
-URL := http://libndp.org/files/libndp-1.6.tar.gz
-
+URL = https://github.com/jpirko/libndp/archive/v1.7.tar.gz
+ARCHIVES = 
 
 include ../common/Makefile.common
