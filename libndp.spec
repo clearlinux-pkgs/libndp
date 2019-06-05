@@ -4,7 +4,7 @@
 #
 Name     : libndp
 Version  : 1.7
-Release  : 7
+Release  : 8
 URL      : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Source0  : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Summary  : Neighbour discovery library.
