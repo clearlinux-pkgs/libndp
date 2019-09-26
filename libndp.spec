@@ -4,16 +4,16 @@
 #
 Name     : libndp
 Version  : 1.7
-Release  : 8
+Release  : 9
 URL      : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Source0  : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Summary  : Neighbour discovery library.
 Group    : Development/Tools
 License  : LGPL-2.1
-Requires: libndp-bin
-Requires: libndp-lib
-Requires: libndp-license
-Requires: libndp-man
+Requires: libndp-bin = %{version}-%{release}
+Requires: libndp-lib = %{version}-%{release}
+Requires: libndp-license = %{version}-%{release}
+Requires: libndp-man = %{version}-%{release}
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
@@ -29,8 +29,7 @@ named ndptool for sending and receiving NDP messages.
 %package bin
 Summary: bin components for the libndp package.
 Group: Binaries
-Requires: libndp-license
-Requires: libndp-man
+Requires: libndp-license = %{version}-%{release}
 
 %description bin
 bin components for the libndp package.
@@ -39,9 +38,10 @@ bin components for the libndp package.
 %package dev
 Summary: dev components for the libndp package.
 Group: Development
-Requires: libndp-lib
-Requires: libndp-bin
-Provides: libndp-devel
+Requires: libndp-lib = %{version}-%{release}
+Requires: libndp-bin = %{version}-%{release}
+Provides: libndp-devel = %{version}-%{release}
+Requires: libndp = %{version}-%{release}
 
 %description dev
 dev components for the libndp package.
@@ -50,9 +50,9 @@ dev components for the libndp package.
 %package dev32
 Summary: dev32 components for the libndp package.
 Group: Default
-Requires: libndp-lib32
-Requires: libndp-bin
-Requires: libndp-dev
+Requires: libndp-lib32 = %{version}-%{release}
+Requires: libndp-bin = %{version}-%{release}
+Requires: libndp-dev = %{version}-%{release}
 
 %description dev32
 dev32 components for the libndp package.
@@ -61,7 +61,7 @@ dev32 components for the libndp package.
 %package lib
 Summary: lib components for the libndp package.
 Group: Libraries
-Requires: libndp-license
+Requires: libndp-license = %{version}-%{release}
 
 %description lib
 lib components for the libndp package.
@@ -70,7 +70,7 @@ lib components for the libndp package.
 %package lib32
 Summary: lib32 components for the libndp package.
 Group: Default
-Requires: libndp-license
+Requires: libndp-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the libndp package.
@@ -102,31 +102,42 @@ popd
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1530280550
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1569526755
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %autogen --disable-static
 make  %{?_smp_mflags}
 
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export CFLAGS="$CFLAGS -m32"
-export CXXFLAGS="$CXXFLAGS -m32"
-export LDFLAGS="$LDFLAGS -m32"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %autogen --disable-static   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
+cd ../build32;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1530280550
+export SOURCE_DATE_EPOCH=1569526755
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/libndp
-cp COPYING %{buildroot}/usr/share/doc/libndp/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/libndp
+cp COPYING %{buildroot}/usr/share/package-licenses/libndp/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -147,7 +158,7 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/ndp.h
 /usr/lib64/libndp.so
 /usr/lib64/pkgconfig/libndp.pc
 
@@ -168,9 +179,9 @@ popd
 /usr/lib32/libndp.so.0.1.1
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/libndp/COPYING
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libndp/COPYING
 
 %files man
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/man/man8/ndptool.8
