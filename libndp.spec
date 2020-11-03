@@ -4,7 +4,7 @@
 #
 Name     : libndp
 Version  : 1.7
-Release  : 9
+Release  : 10
 URL      : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Source0  : https://github.com/jpirko/libndp/archive/v1.7.tar.gz
 Summary  : Neighbour discovery library.
@@ -94,6 +94,7 @@ man components for the libndp package.
 
 %prep
 %setup -q -n libndp-1.7
+cd %{_builddir}/libndp-1.7
 pushd ..
 cp -a libndp-1.7 build32
 popd
@@ -103,14 +104,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1569526755
+export SOURCE_DATE_EPOCH=1604442509
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %autogen --disable-static
 make  %{?_smp_mflags}
@@ -129,15 +130,15 @@ export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 cd ../build32;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1569526755
+export SOURCE_DATE_EPOCH=1604442509
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libndp
-cp COPYING %{buildroot}/usr/share/package-licenses/libndp/COPYING
+cp %{_builddir}/libndp-1.7/COPYING %{buildroot}/usr/share/package-licenses/libndp/01a6b4bf79aca9b556822601186afab86e8c4fbf
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -180,7 +181,7 @@ popd
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/libndp/COPYING
+/usr/share/package-licenses/libndp/01a6b4bf79aca9b556822601186afab86e8c4fbf
 
 %files man
 %defattr(0644,root,root,0755)
